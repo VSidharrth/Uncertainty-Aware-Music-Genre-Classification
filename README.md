@@ -90,10 +90,10 @@ temperature_scale(probs, optimal_temp)
 | Metric                        | Value   |
 |------------------------------|---------|
 | Test Accuracy                | 79.72%  |
-| Macro F1-score               | ~0.80   |
+| Macro F1-score               | 0.80   |
 | ECE (before calibration)     | 0.2918  |
 | ECE (after calibration)      | 0.0190  |
-| Accuracy (Top 50% confident) | ~94%    |
+| Accuracy (Top 50% confident) | 94%    |
 
 ---
 

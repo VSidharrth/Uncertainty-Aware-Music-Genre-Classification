@@ -58,7 +58,7 @@ pip install librosa tensorflow numpy pandas scikit-learn matplotlib tqdm
 
 ## ▶️ How to Run
 
-### 1. Mount Google Drive (if using Colab):
+### 1. Save the folders to your Google Drive and mount Google Drive (if using Colab):
 ```python
 from google.colab import drive
 drive.mount('/content/drive')
@@ -108,3 +108,7 @@ If you use this code or results in your research, please cite:
 ## 📝 License
 
 For academic research and educational use only. Please contact the authors for any other usage.
+V. Sidharrth bl.en.u4aid23054@bl.students.amrita.edu
+Sarada Jayan j_sarada@blr.amrita.edu
+Bilal Alatas balatas@firat.edu.tr
+

@@ -96,8 +96,6 @@ temperature_scale(probs, optimal_temp)
 
 ---
 
-## 📌 Citation
-
 If you use this code or results in your research, please cite:
 
 > V. Sidharrth, J. Sarada, B. Alatas. *Uncertainty-Aware Music Genre Classification using Evidential Deep Learning*. PeerJ Computer Science (Under Review, 2025).

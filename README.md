@@ -35,54 +35,47 @@ The experiments were conducted on **Google Colab**.
 ```bash
 pip install librosa tensorflow numpy pandas scikit-learn matplotlib tqdm
 ```
-Libraries used:
+###Libraries used:
+-librosa
+-tensorflow
+-numpy
+-pandas
+-scikit-learn
+-matplotlib
+-tqdm
 
-librosa
+## 🧠 Methodology Overview
+###Audio Segmentation & Feature Extraction
+-Each 30-second audio file is segmented into 3-second segments
+-Segment overlap: 50%
+-Feature extraction: 40 MFCC coefficients
+-FFT window size: 2048
+-Hop length: 512
+-Resulting MFCC shape per segment: (130, 40)
+-Final CNN input shape: (130, 40, 1)
 
-tensorflow
+## 🔹 Dataset Splitting (Song-Level)
+-Segments from a single song are restricted to one split only.
+-Training set: 64%, 5% further removed through Local Outlier Factor algorithm
+-Validation set: 16%
+-Test set: 20%
 
-numpy
+### After segmentation and cleaning:
+-Training samples: 12137
+-Validation samples: 3037
+-Testing samples: 3798
+-Total samples before outlier removal: 18972
+-Total samples before outlier removal: 18365
 
-pandas
+## 🔹 Outlier Detection
+-Algorithm: Local Outlier Factor (LOF)
+-Applied only on training data
+-Number of neighbors: 20
+-Contamination factor: 0.05
+-Outliers removed: 607
 
-scikit-learn
-
-matplotlib
-
-tqdm
-
-🧠 Methodology Overview
-🔹 Audio Segmentation & Feature Extraction
-Each 30-second audio file is segmented into 3-second segments
-Segment overlap: 50%
-Feature extraction: 40 MFCC coefficients
-FFT window size: 2048
-Hop length: 512
-Resulting MFCC shape per segment: (130, 40)
-Final CNN input shape: (130, 40, 1)
-
-🔹 Dataset Splitting (Song-Level)
-Segments from a single song are restricted to one split only.
-Training set: 64%, 5% further removed through Local Outlier Factor algorithm
-Validation set: 16%
-Test set: 20%
-
-After segmentation and cleaning:
-Training samples: 12137
-Validation samples: 3037
-Testing samples: 3798
-Total samples before outlier removal: 18972
-Total samples before outlier removal: 18365
-
-🔹 Outlier Detection
-Algorithm: Local Outlier Factor (LOF)
-Applied only on training data
-Number of neighbors: 20
-Contamination factor: 0.05
-Outliers removed: 607
-
-🧱 Model Architecture
-A CNN–LSTM Evidential Neural Network is employed.
+## 🧱 Model Architecture
+-A CNN–LSTM Evidential Neural Network is employed.
 Layer	Output Shape	Parameters
 Input	(None, 130, 40, 1)	0
 Conv2D (32, 3×3, ReLU)	(None, 130, 40, 32)	320
@@ -96,46 +89,46 @@ Total parameters: 181450
 Trainable parameters: 181450
 Non-trainable parameters: 0
 
-🧮 Evidential Deep Learning Framework
-Output activation: Softplus
-Evidence computation: e_k = softplus(z_k)
-Dirichlet parameters: α_k = e_k + 1
-Dirichlet concentration: S = Σ α_k
-Predictive probability: p̂_k = α_k / S
+## 🧮 Evidential Deep Learning Framework
+-Output activation: Softplus
+-Evidence computation: e_k = softplus(z_k)
+-Dirichlet parameters: α_k = e_k + 1
+-Dirichlet concentration: S = Σ α_k
+-Predictive probability: p̂_k = α_k / S
 
-🔻 Loss Function
-The total loss is defined as:
+## 🔻 Loss Function
+-The total loss is defined as:
 L = LNLL + λ · KL
 λ = 1
-LNLL: Negative Log-Likelihood
-KL: Kullback–Leibler divergence between predicted Dirichlet distribution and uniform prior
+-LNLL: Negative Log-Likelihood
+-KL: Kullback–Leibler divergence between predicted Dirichlet distribution and uniform prior
 
-🏋️ Training Configuration
-Optimizer: Adam
-Learning rate: 1e−3
-Batch size: 32
-Epochs: 40
-Metric: Categorical accuracy
+## 🏋️ Training Configuration
+-Optimizer: Adam
+-Learning rate: 1e−3
+-Batch size: 32
+-Epochs: 40
+-Metric: Categorical accuracy
 
-🔍 Uncertainty Quantification
+## 🔍 Uncertainty Quantification
 Uncertainty is computed as: u = K / S
 Where:
 K = 10 (number of genres)
 S = Dirichlet concentration
 
-Reliability Threshold
-Reliable prediction: u < 0.4
-Unreliable prediction: u ≥ 0.4
+## Reliability Threshold
+-Reliable prediction: u < 0.4
+-Unreliable prediction: u ≥ 0.4
 
-📊 Evaluation Metrics
-Classification accuracy
-Macro F1-score
-Confusion matrix
-Expected Calibration Error (ECE)
-Reliability diagram
-Selective prediction (Accuracy vs Coverage)
+## 📊 Evaluation Metrics
+-Classification accuracy
+-Macro F1-score
+-Confusion matrix
+-Expected Calibration Error (ECE)
+-Reliability diagram
+-Selective prediction (Accuracy vs Coverage)
 
-📈 Results Summary
+## 📈 Results Summary
 Metric	Value
 Training Accuracy	80.64%
 Validation Accuracy	72.99%

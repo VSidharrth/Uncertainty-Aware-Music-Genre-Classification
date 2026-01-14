@@ -122,21 +122,16 @@ where:
 ---
 
 ## 🔍 Uncertainty Quantification
-
 Uncertainty is computed as:
+u = K / S
 
-\[
-u = \frac{K}{S}
-\]
-
-Where:
-- \(K = 10\) (number of genres)
-- \(S\) = Dirichlet concentration
+where:
+- **K = 10** (number of genres)
+- **S** = Dirichlet concentration
 
 ### Reliability Threshold
-
-- **Reliable prediction**: \(u < 0.4\)
-- **Unreliable prediction**: \(u \geq 0.4\)
+- **Reliable prediction**: u < 0.4  
+- **Unreliable prediction**: u ≥ 0.4
 
 ## 📊 Evaluation Metrics
 

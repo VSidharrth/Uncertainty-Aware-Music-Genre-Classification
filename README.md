@@ -90,44 +90,26 @@ A **CNN–LSTM Evidential Neural Network** is employed.
 ## 🧮 Evidential Deep Learning Framework
 
 - Output activation: **Softplus**
-- Evidence computation:
-  
-  \[
-  e_k = \text{softplus}(z_k)
-  \]
+- Evidence computation:  
+  **eₖ = softplus(zₖ)**
 
-- Dirichlet parameters:
-  
-  \[
-  \alpha_k = e_k + 1
-  \]
+- Dirichlet parameters:  
+  **αₖ = eₖ + 1**
 
-- Dirichlet concentration:
-  
-  \[
-  S = \sum_{k=1}^{K} \alpha_k
-  \]
+- Dirichlet concentration:  
+  **S = Σₖ αₖ**
 
-- Predictive probability:
-  
-  \[
-  \hat{p}_k = \frac{\alpha_k}{S}
-  \]
-
----
+- Predictive probability:  
+  **p̂ₖ = αₖ / S**
 
 ## 🔻 Loss Function
-
 The total training loss is defined as:
-
-\[
-\mathcal{L} = \mathcal{L}_{\text{NLL}} + \lambda \cdot \mathcal{L}_{\text{KL}}
-\]
-
+L = L_NLL + λ · L_KL
 where:
-- \(\lambda = 1\) is the regularization coefficient
-- \(\mathcal{L}_{\text{NLL}}\): **Negative Log-Likelihood** loss
-- \(\mathcal{L}_{\text{KL}}\): **Kullback–Leibler divergence** between the predicted Dirichlet distribution and a uniform prior
+- λ = 1 is the regularization coefficient
+- **L_NLL**: Negative Log-Likelihood loss
+- **L_KL**: Kullback–Leibler divergence between the predicted Dirichlet distribution and a uniform prior
+
 
 ## 🏋️ Training Configuration
 

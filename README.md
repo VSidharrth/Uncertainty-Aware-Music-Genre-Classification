@@ -1,111 +1,182 @@
-
 # Uncertainty-Aware Music Genre Classification using Evidential Deep Learning
 
-This repository contains code and instructions to reproduce the results of our study on uncertainty-aware music genre classification using Evidential Deep Learning (EDL). The model is trained on the GTZAN dataset and evaluated with various uncertainty and calibration metrics.
+This repository contains the complete code and experimental setup to reproduce the results presented in our study on **uncertainty-aware music genre classification** using **Evidential Deep Learning (EDL)**. The proposed CNN–LSTM-based evidential framework is evaluated on the **GTZAN dataset**, with a focus on **uncertainty quantification, calibration, and reliability-aware evaluation**.
 
 ---
 
 ## 📁 Dataset
 
 - **Name**: GTZAN Genre Collection  
-- **Source**: [GTZAN Dataset on Kaggle](https://www.kaggle.com/datasets/andradaolteanu/gtzan-dataset-music-genre-classification)  
-- **Description**: 1,000 audio files (30 seconds each), across 10 genres:  
-  `blues`, `classical`, `country`, `disco`, `hiphop`, `jazz`, `metal`, `pop`, `reggae`, `rock`
+- **Source**: GTZAN Dataset on Kaggle (MARSYAS collection)  
+- **Description**:
+  - 1,000 audio recordings  
+  - Duration: 30 seconds per file  
+  - Sampling rate: 22050 Hz  
+  - Mono channel, 16-bit  
+  - 10 genres:
+    ```
+    blues, classical, country, disco, hiphop,
+    jazz, metal, pop, reggae, rock
+    ```
+
+⚠️ One corrupted Jazz audio file is automatically discarded during preprocessing.
 
 ---
 
 ## ⚙️ Requirements
 
-Install required packages (for Colab or local setup):
+The experiments were conducted on **Google Colab**.
 
+### Software
+- Python **3.11.13**
+- TensorFlow **2.18.0**
+
+### Required Libraries
 ```bash
 pip install librosa tensorflow numpy pandas scikit-learn matplotlib tqdm
 ```
+Libraries used:
 
-- Python ≥ 3.8  
-- TensorFlow ≥ 2.18  
-- Libraries: `librosa`, `numpy`, `scikit-learn`, `pandas`, `matplotlib`, `tqdm`
+librosa
 
----
+tensorflow
 
-## 🧠 Methodology Overview
+numpy
 
-### Feature Extraction:
-- Extract 40 MFCCs per 3-second segment with 50% overlap from each 30s audio file.  
-- Each segment is represented as a 2D input with shape: `(130, 40, 1)`
+pandas
 
-### Model Architecture:
-- CNN + LSTM model  
-- Output activation: **Softplus** to generate Dirichlet parameters  
-- Loss function: Negative Log Likelihood + KL Divergence (Evidential Deep Learning)
+scikit-learn
 
-### Uncertainty Estimation:
-- Based on Dirichlet distribution: `alpha = evidence + 1`  
-- Predictive uncertainty = `num_classes / sum(alpha)`
+matplotlib
 
-### Calibration:
-- **Temperature scaling** is applied to the predicted Dirichlet probabilities to reduce Expected Calibration Error (ECE)
+tqdm
 
-### Evaluation Metrics:
-- Accuracy  
-- Macro F1-score  
-- Confusion Matrix  
-- Expected Calibration Error (ECE)  
-- Reliability Diagram  
-- Selective Prediction (Accuracy vs Coverage)
+🧠 Methodology Overview
+🔹 Audio Segmentation & Feature Extraction
+Each 30-second audio file is segmented into 3-second segments
+Segment overlap: 50%
+Feature extraction: 40 MFCC coefficients
+FFT window size: 2048
+Hop length: 512
+Resulting MFCC shape per segment: (130, 40)
+Final CNN input shape: (130, 40, 1)
 
----
+🔹 Dataset Splitting (Song-Level)
+Segments from a single song are restricted to one split only.
+Training set: 64%, 5% further removed through Local Outlier Factor algorithm
+Validation set: 16%
+Test set: 20%
 
-## ▶️ How to Run
+After segmentation and cleaning:
+Training samples: 12137
+Validation samples: 3037
+Testing samples: 3798
+Total samples before outlier removal: 18972
+Total samples before outlier removal: 18365
 
-### 1. Save the folders to your Google Drive and mount Google Drive (if using Colab):
-```python
-from google.colab import drive
-drive.mount('/content/drive')
-```
+🔹 Outlier Detection
+Algorithm: Local Outlier Factor (LOF)
+Applied only on training data
+Number of neighbors: 20
+Contamination factor: 0.05
+Outliers removed: 607
 
-### 2. Extract MFCC features and segment the audio.
+🧱 Model Architecture
+A CNN–LSTM Evidential Neural Network is employed.
+Layer	Output Shape	Parameters
+Input	(None, 130, 40, 1)	0
+Conv2D (32, 3×3, ReLU)	(None, 130, 40, 32)	320
+MaxPooling2D (2×2)	(None, 65, 20, 32)	0
+Reshape	(None, 65, 640)	0
+LSTM (64 units)	(None, 64)	180480
+Dropout	(None, 64)	0
+Dense (Softplus, 10)	(None, 10)	650
 
-### 3. Train the CNN-LSTM EDL model:
-```python
-model.fit(X_train, y_train, ...)
-```
+Total parameters: 181450
+Trainable parameters: 181450
+Non-trainable parameters: 0
 
-### 4. Predict genre labels and compute uncertainty scores.
+🧮 Evidential Deep Learning Framework
+Output activation: Softplus
+Evidence computation: e_k = softplus(z_k)
+Dirichlet parameters: α_k = e_k + 1
+Dirichlet concentration: S = Σ α_k
+Predictive probability: p̂_k = α_k / S
 
-### 5. Plot:
-- Confusion matrix  
-- Selective prediction curves  
-- Reliability diagrams
+🔻 Loss Function
+The total loss is defined as:
+L = LNLL + λ · KL
+λ = 1
+LNLL: Negative Log-Likelihood
+KL: Kullback–Leibler divergence between predicted Dirichlet distribution and uniform prior
 
-### 6. Apply temperature scaling:
-```python
-temperature_scale(probs, optimal_temp)
-```
+🏋️ Training Configuration
+Optimizer: Adam
+Learning rate: 1e−3
+Batch size: 32
+Epochs: 40
+Metric: Categorical accuracy
 
----
+🔍 Uncertainty Quantification
+Uncertainty is computed as: u = K / S
+Where:
+K = 10 (number of genres)
+S = Dirichlet concentration
 
-## 📊 Results Summary
+Reliability Threshold
+Reliable prediction: u < 0.4
+Unreliable prediction: u ≥ 0.4
 
-| Metric                                        | Value  |
-|-----------------------------------------------|--------|
-| Test Accuracy                                 | 79.72% |
-| ECE (before calibration)                      | 0.2918 |
-| ECE (after calibration)                       | 0.0190 |
-| Accuracy (Top 50% confident upon calibration) | 94%    |
+📊 Evaluation Metrics
+Classification accuracy
+Macro F1-score
+Confusion matrix
+Expected Calibration Error (ECE)
+Reliability diagram
+Selective prediction (Accuracy vs Coverage)
 
----
+📈 Results Summary
+Metric	Value
+Training Accuracy	80.64%
+Validation Accuracy	72.99%
+Test Accuracy	65.81%
+Test Loss	1.2574
+ECE (before calibration)	0.1401
+ECE (after calibration)	0.0791
+Optimal temperature	0.6399
 
-If you use this code or results in your research, please cite:
+🎯 Selective Prediction
+High-confidence samples achieve near-perfect accuracy
+Accuracy improves as coverage decreases
+Temperature scaling significantly enhances prediction reliability
 
-> V. Sidharrth, J. Sarada, B. Alatas. *Uncertainty-Aware Music Genre Classification using Evidential Deep Learning*. PeerJ Computer Science (Under Review, 2025).
+📐 Statistical Validation
+Statistical test: Wilcoxon signed-rank test
+Bootstrap iterations: 1000
+Mean ECE reduction: 0.060845
+95% confidence interval: [0.034680, 0.087250]
+Test statistic: 0
+p-value: 3.325859e−165
 
----
+⚠️ Limitations
+Only MFCC features are used
+GTZAN dataset contains inherent genre ambiguity
+Evaluation is performed in an offline setting
 
-## 📝 License
+📌 Citation
+If you use this work, please cite:
+V. Sidharrth, J. Sarada, B. Alatas.
+Uncertainty-Aware Music Genre Classification using Evidential Deep Learning.
+PeerJ Computer Science (Under Review, 2025).
 
-For academic research and educational use only. Please contact the authors for any other usage.
-V. Sidharrth bl.en.u4aid23054@bl.students.amrita.edu
-Sarada Jayan j_sarada@blr.amrita.edu
-Bilal Alatas balatas@firat.edu.tr
+📝 License & Contact
+This work is intended strictly for academic and educational purposes.
 
+V. Sidharrth
+Email: bl.en.u4aid23054@bl.students.amrita.edu
+
+J. Sarada
+Email: j_sarada@blr.amrita.edu
+
+B. Alatas
+Email: balatas@firat.edu.tr

@@ -118,15 +118,16 @@ A **CNN–LSTM Evidential Neural Network** is employed.
 
 ## 🔻 Loss Function
 
-The total loss is defined as:
+The total training loss is defined as:
 
 \[
-\mathcal{L} = \mathcal{L}_{\text{NLL}} + \lambda \cdot \mathrm{KL}
+\mathcal{L} = \mathcal{L}_{\text{NLL}} + \lambda \cdot \mathcal{L}_{\text{KL}}
 \]
 
-- \(\lambda = 1\)
-- **LNLL**: Negative Log-Likelihood
-- **KL**: Kullback–Leibler divergence between the predicted Dirichlet distribution and a uniform prior
+where:
+- \(\lambda = 1\) is the regularization coefficient
+- \(\mathcal{L}_{\text{NLL}}\): **Negative Log-Likelihood** loss
+- \(\mathcal{L}_{\text{KL}}\): **Kullback–Leibler divergence** between the predicted Dirichlet distribution and a uniform prior
 
 ## 🏋️ Training Configuration
 

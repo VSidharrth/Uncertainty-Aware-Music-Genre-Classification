@@ -175,6 +175,10 @@ where:
 - Test statistic: **0**
 - p-value: **3.325859 × 10⁻¹⁶⁵**
 
+## Ablation
+
+An ablation study was conducted to isolate the effect of the evidential loss by comparing the proposed evidential CNN–LSTM model with an identical architecture trained using standard cross-entropy. While the cross-entropy model achieved higher classification accuracy (68.4% vs. 65.2%), it exhibited pronounced overconfidence, maintaining high confidence even on incorrect predictions (0.66 vs. 0.85 for correct predictions). In contrast, the evidential model provided more informative uncertainty estimates, assigning higher uncertainty to incorrect predictions (0.375) compared to correct ones (0.335), thereby demonstrating improved error awareness. Although the cross-entropy model achieved better calibration in terms of ECE (0.108 vs. 0.137), it lacked the ability to meaningfully distinguish between correct and incorrect predictions in terms of predictive reliability. These results highlight that, despite a slight trade-off in accuracy, the evidential loss enhances the model’s ability to quantify uncertainty and detect its own errors, which is critical for building more trustworthy and risk-aware systems.
+
 ## ⚠️ Limitations
 
 - Only MFCC features are used

@@ -193,7 +193,7 @@ If you use this work, please cite:
 
 > V. Sidharrth, J. Sarada, B. Alatas  
 > **Uncertainty-Aware Music Genre Classification using Evidential Deep Learning**  
-> *PeerJ Computer Science* (Under Review, 2025)
+> *PeerJ Computer Science*
 
 ---
 
